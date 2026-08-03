@@ -1,8 +1,10 @@
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
 import * as React from "react";
+import * as ComponentFramework from "pcf-start";
+
 import { AuditTimelineComponent, IAuditTimelineProps } from "./src/components/AuditTimeLineComponent";
 
-export class AuditHistoryTimeline implements ComponentFramework.ReactControl<IInputs, IOutputs> {
+export class AuditHistoryTimeline implements ComponentFramework.StandardControl<IInputs, IOutputs> {
     private notifyOutputChanged: () => void;
     private context: ComponentFramework.Context<IInputs>;
     private container: HTMLDivElement;

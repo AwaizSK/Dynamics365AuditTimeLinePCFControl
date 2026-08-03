@@ -3,7 +3,8 @@ import { ActivityItem, Icon, Link, Spinner, SpinnerSize } from "@fluentui/react"
 import { IInputs } from "../../generated/ManifestTypes";
 
 export interface IAuditTimelineProps {
-  context: ComponentFramework.Context<IInputs>;
+  // Use any for context to avoid missing ComponentFramework namespace in this environment
+  context: any;
 }
 
 interface IAuditRecord {
@@ -15,7 +16,7 @@ interface IAuditRecord {
 }
 
 export const AuditTimelineComponent: React.FC<IAuditTimelineProps> = ({ context }) => {
-  const [audits, setAudits] = React.useState([]);
+  const [audits, setAudits] = React.useState<IAuditRecord[]>([]);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
@@ -33,7 +34,7 @@ export const AuditTimelineComponent: React.FC<IAuditTimelineProps> = ({ context 
 
         const response = await context.webAPI.retrieveMultipleRecords("audit", filter);
         
-        const parsedAudits: IAuditRecord[] = response.entities.map((entity) => ({
+        const parsedAudits: IAuditRecord[] = response.entities.map((entity: any) => ({
           id: entity.auditid,
           createdOn: new Date(entity.createdon).toLocaleString(),
           userName: entity["_userid_value@OData.Community.Display.V1.FormattedValue"] || "System",
