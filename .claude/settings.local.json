@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem \"d:\\\\Awaiz\\\\Awaiz_2\\\\Training\\\\PCF\\\\AuditHistoryTimeline\\\\node_modules\" -Directory | Where-Object { $_.Name -match \"pcf-start|fluentui|react$|react-dom|powerapps\" } | Select-Object Name)",
+      "PowerShell(cd \"D:\\\\Awaiz\\\\Awaiz_2\\\\Training\\\\PCF\\\\AuditHistoryTimeline\"; npx tsc --noEmit -p tsconfig.json; Write-Output \"EXIT CODE: $LASTEXITCODE\")"
+    ]
+  }
+}
