@@ -2,9 +2,16 @@ import * as React from "react";
 import { ActivityItem, Icon, Link, Spinner, SpinnerSize } from "@fluentui/react";
 import { IInputs } from "../../generated/ManifestTypes";
 
+interface IAuditEntity {
+  auditid?: string;
+  createdon?: string | Date;
+  "_userid_value@OData.Community.Display.V1.FormattedValue"?: string;
+  "action@OData.Community.Display.V1.FormattedValue"?: string;
+  "operation@OData.Community.Display.V1.FormattedValue"?: string;
+}
+
 export interface IAuditTimelineProps {
-  // Use any for context to avoid missing ComponentFramework namespace in this environment
-  context: any;
+  context: ComponentFramework.Context<IInputs>;
 }
 
 interface IAuditRecord {
@@ -23,21 +30,28 @@ export const AuditTimelineComponent: React.FC<IAuditTimelineProps> = ({ context 
     const fetchAuditHistory = async () => {
       try {
         // Retrieve current record ID and Entity Logical Name from Page Context
-        const pageContext = (context as unknown as { page: { entityId: string; entityTypeName: string } }).page;
-        if (!pageContext || !pageContext.entityId) {
+        const pageContext = (context as unknown as { page?: { entityId?: string; entityTypeName?: string } }).page;
+        if (!pageContext?.entityId) {
           setLoading(false);
           return;
         }
 
         const recordId = pageContext.entityId.replace("{", "").replace("}", "");
         const filter = `?$filter=_objectid_value eq ${recordId}&$orderby=createdon desc&$top=20`;
-        const response = await context.webAPI.retrieveMultipleRecords("audit", filter);
-        const parsedAudits: IAuditRecord[] = response.entities.map((entity: any) => ({
-          id: entity.auditid,
-          createdOn: new Date(entity.createdon).toLocaleString(),
-          userName: entity["_userid_value@OData.Community.Display.V1.FormattedValue"] || "System",
-          actionName: entity["action@OData.Community.Display.V1.FormattedValue"] || "Update",
-          operation: entity["operation@OData.Community.Display.V1.FormattedValue"] || "Change",
+        const webApi = context.webAPI;
+
+        if (!webApi) {
+          setLoading(false);
+          return;
+        }
+
+        const response = await webApi.retrieveMultipleRecords("audit", filter);
+        const parsedAudits: IAuditRecord[] = response.entities.map((entity: IAuditEntity) => ({
+          id: entity.auditid ?? "",
+          createdOn: new Date(entity.createdon ?? new Date()).toLocaleString(),
+          userName: entity["_userid_value@OData.Community.Display.V1.FormattedValue"] ?? "System",
+          actionName: entity["action@OData.Community.Display.V1.FormattedValue"] ?? "Update",
+          operation: entity["operation@OData.Community.Display.V1.FormattedValue"] ?? "Change",
         }));
 
         setAudits(parsedAudits);
@@ -48,7 +62,7 @@ export const AuditTimelineComponent: React.FC<IAuditTimelineProps> = ({ context 
       }
     };
 
-    fetchAuditHistory();
+    void fetchAuditHistory();
   }, [context]);
 
   if (loading) return <Spinner size={SpinnerSize.medium} label="Loading audit history..." />;

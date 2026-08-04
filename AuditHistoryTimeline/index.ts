@@ -1,19 +1,4 @@
-declare namespace ComponentFramework {
-    interface Dictionary {
-        [key: string]: any;
-    }
 
-    interface Context<T> {
-        [key: string]: any;
-    }
-
-    interface ReactControl<IInputs, IOutputs> {
-        init(context: Context<IInputs>, notifyOutputChanged: () => void, state: Dictionary): void;
-        updateView(context: Context<IInputs>): React.ReactElement;
-        getOutputs(): IOutputs;
-        destroy(): void;
-    }
-}
 
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
 import * as React from "react";
