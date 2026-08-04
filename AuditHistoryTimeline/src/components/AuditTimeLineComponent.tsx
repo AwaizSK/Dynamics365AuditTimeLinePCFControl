@@ -31,9 +31,7 @@ export const AuditTimelineComponent: React.FC<IAuditTimelineProps> = ({ context 
 
         const recordId = pageContext.entityId.replace("{", "").replace("}", "");
         const filter = `?$filter=_objectid_value eq ${recordId}&$orderby=createdon desc&$top=20`;
-
         const response = await context.webAPI.retrieveMultipleRecords("audit", filter);
-        
         const parsedAudits: IAuditRecord[] = response.entities.map((entity: any) => ({
           id: entity.auditid,
           createdOn: new Date(entity.createdon).toLocaleString(),
