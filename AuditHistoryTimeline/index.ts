@@ -7,7 +7,7 @@ import { AuditTimelineComponent, IAuditTimelineProps } from "./src/components/Au
 export class AuditHistoryTimeline implements ComponentFramework.ReactControl<IInputs, IOutputs> {
 
     constructor() {
-        // Empty constructor
+        
     }
 
     public init(
